@@ -15,8 +15,9 @@ public class User {
         user.name = jsonObject.getString("name");
         user.uid = jsonObject.getLong("id");
         user.screenName = jsonObject.getString("screen_name");
-        user.profileImageUrl = jsonObject.getString("profile_image_url");
-
+        user.profileImageUrl = jsonObject.getString("profile_image_url_https");
+        //This is a case where the tweets are loading into the RecyclerView, but you don’t see any images loading.
+        //Using profile_image_url_https instead of profile_image_url
         return user;
     }
 }
