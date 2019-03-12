@@ -3,6 +3,7 @@ package com.codepath.apps.restclienttemplate;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,11 @@ import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 
 import java.util.List;
+import java.util.Locale;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder>{
 
@@ -60,6 +66,25 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
+    // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
+    public String getRelativeTimeAgo(String rawJsonDate) {
+        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+        sf.setLenient(true);
+
+        String relativeDate = "";
+        try {
+            long dateMillis = sf.parse(rawJsonDate).getTime();
+            relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
+                    System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE).toString();
+            relativeDate = relativeDate.substring(0, relativeDate.length() - 3);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return relativeDate;
+    }
+
     //Define the Viewholder
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -67,12 +92,24 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         public ImageView ivProfileImage;
         public TextView tvScreenName;
         public TextView tvBody;
+//        public TextView tvTime;
+//        public TextView tvName;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvScreenName   = itemView.findViewById(R.id.tvScreenName);
             tvBody         = itemView.findViewById(R.id.tvBody);
+//            tvTime = itemView.findViewById(R.id.tvTime);
+//            tvName = itemView.findViewById(R.id.tvName);
         }
+//        //Our method created to bind the data to the holder.
+//        public void bind(Tweet tweet) {
+//            tvBody.setText(tweet.body);
+//            tvScreenName.setText("@" + tweet.user.screenName);
+//            tvName.setText(tweet.user.name);
+//            tvTime.setText(getRelativeTimeAgo(tweet.createdAt));
+//            Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
+//        }
     }
 }
